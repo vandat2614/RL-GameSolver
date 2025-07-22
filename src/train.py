@@ -1,6 +1,7 @@
 import random
 import torch
 import torch.nn as nn
+import math
 
 from .utils import Logger, ReplayBuffer
 from .models import NeuralNetwork
@@ -95,12 +96,12 @@ def train(env, config: str):
             best_reward = total_reward
             logger.save_model(model, 'best')
 
-        logger.log_episode(episode + 1, total_reward, loss, epsilon)
+        logger.log_episode(episode + 1, total_reward, loss, epsilon, show=((episode + 1) % 100 == 0))
 
-    if episode < warmup_episodes:
-        epsilon = epsilon_start
-    else:
-        epsilon = max(epsilon_end, epsilon_start * torch.exp(-epsilon_decay * (episode - warmup_episodes)))
+        if episode + 1 < warmup_episodes:
+            epsilon = epsilon_start
+        else:
+            epsilon = max(epsilon_end, epsilon_start * math.exp(-epsilon_decay * (episode - warmup_episodes)))
 
     logger.save_model(model, 'last')
     logger.plot_results()

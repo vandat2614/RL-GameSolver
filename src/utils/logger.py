@@ -38,12 +38,15 @@ class Logger:
             raise ValueError("Video directory only available in test mode")
         return self.videos_dir
 
-    def log_episode(self, episode: int, reward: float, loss: float = None, epsilon: float = None):
+    def log_episode(self, episode: int, reward: float, loss: float = None, epsilon: float = None, show = False):
         self.rewards.append(reward)
         if epsilon is not None:
             self.epsilons.append(epsilon)
         if loss is not None:
             self.losses.append(loss)
+
+        if not show:
+            return
 
         if self.mode == 'train':
             if loss is not None:
