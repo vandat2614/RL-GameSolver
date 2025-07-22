@@ -49,10 +49,11 @@ class Logger:
             return
 
         if self.mode == 'train':
+            avg_reward = np.mean(self.rewards[-100:])
             if loss is not None:
-                print(f"Episode {episode}, Reward: {reward:.2f}, Loss: {loss:.4f}, Epsilon: {epsilon:.3f}")
+                print(f"Episode {episode}, Average Reward: {avg_reward:.2f}, Loss: {loss:.4f}, Epsilon: {epsilon:.3f}")
             else:
-                print(f"Episode {episode}, Reward: {reward:.2f}, Epsilon: {epsilon:.3f}")
+                print(f"Episode {episode}, Average Reward: {avg_reward:.2f}, Epsilon: {epsilon:.3f}")
         else:
             print(f"Test Episode {episode}, Reward: {reward:.2f}")
 
