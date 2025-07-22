@@ -1,6 +1,8 @@
 # Virtual environment
 venv/
 
+runs/
+
 # Development folder
 dev/
 

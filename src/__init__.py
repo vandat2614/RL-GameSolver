@@ -1,2 +1,2 @@
-from models import NeuralNetwork
 from .train import train
+from .utils import EnvRegistry

@@ -1,24 +1,23 @@
 env:
   id: "FlappyBird-v0"
   params:
-    render_mode: None
+    render_mode: null
     use_lidar : False
 
 model:
   hidden_sizes: [128, 64, 32]
   hidden_activations: [ReLU, ReLU, ReLU]
-  output_activation: None
+  output_activation: null
 
 train:
-  num_episodes: 1000
-  batch_size: 32
+  num_episodes: 500
+  batch_size: 128
   buffer_size: 10000
   gamma: 0.99
   epsilon_start: 1.0
   epsilon_end: 0.01
   epsilon_decay: 0.995
   learning_rate: 0.001
-  save_interval: 100
 
 logger:
   log_dir: "runs/train"

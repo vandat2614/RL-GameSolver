@@ -35,7 +35,7 @@ class Logger:
         print(f"Episode {episode}, Reward: {reward:.2f}, Loss: {loss:.4f}, Epsilon: {epsilon:.3f}")
     
     def save_model(self, model, name: str):
-        torch.save(model.state_dict(), self.weights_dir / f'{name}.pt')
+        torch.save(model.state_dict().copy(), self.weights_dir / f'{name}.pt')
                 
     def plot_results(self, window: int = 100):
         

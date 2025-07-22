@@ -9,7 +9,8 @@ ACTIVATION_MAP = {
     'Tanh': nn.Tanh,
     'LeakyReLU': nn.LeakyReLU,
     'Sigmoid': nn.Sigmoid,
-    'Softmax': lambda: nn.Softmax(dim=-1)
+    'Softmax': lambda: nn.Softmax(dim=-1),
+    None : nn.Identity
 }
 
 class NeuralNetwork(nn.Module):
@@ -47,10 +48,7 @@ class NeuralNetwork(nn.Module):
         return self.network(x)
     
     @classmethod
-    def from_config(cls, config_path: str, env: gymnasium.Env):
-        with open(config_path, 'r') as f:
-            config = yaml.safe_load(f)
-        
+    def from_config(cls, config: dict, env: gymnasium.Env):
         model_config = config['model']
         
         # Get sizes from environment
@@ -58,7 +56,7 @@ class NeuralNetwork(nn.Module):
         output_size = env.action_space.n 
         
         hidden_activations = [ACTIVATION_MAP[act] for act in model_config['hidden_activations']]
-        output_activation = ACTIVATION_MAP[model_config['output_activation']]
+        output_activation = ACTIVATION_MAP[model_config['output_activation']] 
         
         return cls(
             input_size=input_size,

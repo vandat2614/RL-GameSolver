@@ -2,13 +2,20 @@ import random
 import torch
 import torch.nn as nn
 
-from utils import Logger, ReplayBuffer
+from .utils import Logger, ReplayBuffer
+from .models import NeuralNetwork
 
 def update(model: nn.Module, batch: tuple, optimizer: torch.optim.Optimizer, 
                 criterion: nn.Module, gamma: float, device: torch.device):
     
-    states, actions, rewards, next_states, dones = batch
-    
+    # Transpose the batch (convert batch of Transitions to Transition of batches)
+    batch = list(zip(*batch))  # Convert list of tuples to tuple of lists
+    states = batch[0]
+    actions = batch[1]
+    rewards = batch[2]
+    next_states = batch[3]
+    dones = batch[4]    
+
     # Convert to tensors
     states = torch.FloatTensor(states).to(device)
     actions = torch.LongTensor(actions).to(device)
@@ -38,8 +45,10 @@ def select_action(state: torch.Tensor, model: nn.Module, env, epsilon: float, de
         q_values = model(state_tensor)
         return q_values.argmax().item()
 
-def train(env, model: nn.Module, config: str):
+def train(env, config: str):
     
+    model = NeuralNetwork.from_config(config, env)
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     
@@ -55,7 +64,7 @@ def train(env, model: nn.Module, config: str):
     # Setup
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.MSELoss()
-    replay_buffer = ReplayBuffer(config['buffer_size'])
+    replay_buffer = ReplayBuffer(config['train']['buffer_size'])
     logger = Logger(config=config)
 
     # Training loop
@@ -82,10 +91,10 @@ def train(env, model: nn.Module, config: str):
         
         if total_reward > best_reward:
             best_reward = total_reward
-            logger.save_model(model.state_dict().copy(), 'best')
+            logger.save_model(model, 'best')
 
         logger.log_episode(episode + 1, total_reward, loss, epsilon)
         epsilon = max(epsilon_end, epsilon * epsilon_decay)
     
-    logger.save_model(model.state_dict(), 'last')
+    logger.save_model(model, 'last')
     logger.plot_results()
