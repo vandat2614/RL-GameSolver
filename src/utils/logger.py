@@ -32,8 +32,10 @@ class Logger:
         self.epsilons.append(epsilon)
 
         # Print progress
-        print(f"Episode {episode}, Reward: {reward:.2f}, Loss: {loss:.4f}, Epsilon: {epsilon:.3f}")
-    
+        if loss is not None:
+            print(f"Episode {episode}, Reward: {reward:.2f}, Loss: {loss:.4f}, Epsilon: {epsilon:.3f}")
+        else: print(f"Episode {episode}, Reward: {reward:.2f}, Epsilon: {epsilon:.3f}")
+
     def save_model(self, model, name: str):
         torch.save(model.state_dict().copy(), self.weights_dir / f'{name}.pt')
                 

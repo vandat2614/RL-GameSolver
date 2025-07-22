@@ -75,6 +75,7 @@ def train(env, config: str):
         state, _ = env.reset()
         total_reward = 0
         done = False
+        loss = None
         
         while not done:
 
