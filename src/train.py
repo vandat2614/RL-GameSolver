@@ -65,7 +65,7 @@ def train(env, config: str):
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.MSELoss()
     replay_buffer = ReplayBuffer(config['train']['buffer_size'])
-    logger = Logger(config=config)
+    logger = Logger(config=config, mode="train")
 
     # Training loop
     epsilon = epsilon_start

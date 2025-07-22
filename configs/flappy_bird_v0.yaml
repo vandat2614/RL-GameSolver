@@ -1,7 +1,7 @@
 env:
   id: "FlappyBird-v0"
   params:
-    render_mode: null
+    render_mode: human
     use_lidar : False
 
 model:
