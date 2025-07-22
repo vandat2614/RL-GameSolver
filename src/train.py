@@ -59,6 +59,7 @@ def train(env, config: str):
     epsilon_start = config['train']['epsilon_start']
     epsilon_end = config['train']['epsilon_end']
     epsilon_decay = config['train']['epsilon_decay']
+    warmup_episodes = config['train']['warmup_episodes']
     learning_rate = config['train']['learning_rate']
     
     # Setup
@@ -95,7 +96,11 @@ def train(env, config: str):
             logger.save_model(model, 'best')
 
         logger.log_episode(episode + 1, total_reward, loss, epsilon)
-        epsilon = max(epsilon_end, epsilon * epsilon_decay)
-    
+
+    if episode < warmup_episodes:
+        epsilon = epsilon_start
+    else:
+        epsilon = max(epsilon_end, epsilon_start * torch.exp(-epsilon_decay * (episode - warmup_episodes)))
+
     logger.save_model(model, 'last')
     logger.plot_results()
