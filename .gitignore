@@ -1,1 +1,10 @@
+# Virtual environment
 venv/
+
+# Development folder
+dev/
+
+# VS Code temporary files
+tempCodeRunner.py
+*.pyc
+__pycache__/
