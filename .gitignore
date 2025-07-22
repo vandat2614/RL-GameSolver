@@ -5,6 +5,6 @@ venv/
 dev/
 
 # VS Code temporary files
-tempCodeRunner.py
+tempCodeRunnerFile.py
 *.pyc
 __pycache__/
