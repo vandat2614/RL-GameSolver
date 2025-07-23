@@ -11,12 +11,11 @@ model:
 
 train:
   num_episodes: 5000
-  explore_episodes: 3500
   batch_size: 128
   buffer_size: 10000
   gamma: 0.99
   epsilon_start: 0.9
   epsilon_end: 0
-  epsilon_decay: 0.001
-  warmup_episodes : 300
+  epsilon_decay: 0.0015
+  warmup_episodes : 500
   learning_rate: 0.0001
