@@ -18,4 +18,4 @@ train:
   epsilon_end: 0.01
   epsilon_decay: 0.0001
   warmup_episodes : 300
-  learning_rate: 0.000125
+  learning_rate: 0.0001
