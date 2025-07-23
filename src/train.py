@@ -72,7 +72,7 @@ def train(env, config: str):
 
     # Training loop
     epsilon = epsilon_start
-    best_reward = float('-inf')
+    best_score = float('-inf')
 
     for episode in range(num_episodes):
         state, _ = env.reset()
@@ -83,7 +83,7 @@ def train(env, config: str):
         while not done:
 
             action = select_action(state, model, env, epsilon, device)
-            next_state, reward, done, _, _ = env.step(action)
+            next_state, reward, done, _, info = env.step(action)
             replay_buffer.push(state, action, reward, next_state, done)
             total_reward += reward
             state = next_state
@@ -93,11 +93,12 @@ def train(env, config: str):
                 batch = replay_buffer.sample(batch_size)
                 loss = update(model, batch, optimizer, criterion, gamma, device)
         
-        if total_reward > best_reward:
-            best_reward = total_reward
+        score =  info["score"]
+        if score > best_score:
+            best_score = score
             logger.save_model(model, 'best')
 
-        logger.log_episode(episode + 1, total_reward, loss, epsilon, show=((episode + 1) % 100 == 0))
+        logger.log_episode(episode + 1, score, total_reward, loss, epsilon)
 
         if episode + 1 < warmup_episodes:
             epsilon = epsilon_start
