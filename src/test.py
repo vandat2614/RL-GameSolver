@@ -23,7 +23,7 @@ def test(env, config: dict, model_path: str, num_episodes: int = 5):
                 action = q_values.argmax().item()
 
             state, reward, terminated, truncated, info = env.step(action)
-        score = int(info.get("score", score))  # Keep updating score if available
+            score = int(info.get("score", score))  # Keep updating score if available
         logger.log_episode(episode + 1, score)
 
     logger.log_summary()
