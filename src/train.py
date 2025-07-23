@@ -55,6 +55,7 @@ def train(env, config: str):
     
     # Training parameters
     num_episodes = config['train']['num_episodes']
+    explore_episodes = config['train']['explore_episodes']
     batch_size = config['train']['batch_size']
     gamma = config['train']['gamma']  
     epsilon_start = config['train']['epsilon_start']
@@ -100,8 +101,9 @@ def train(env, config: str):
 
         if episode + 1 < warmup_episodes:
             epsilon = epsilon_start
-        else:
+        elif episode + 1 < explore_episodes:
             epsilon = max(epsilon_end, epsilon_start * math.exp(-epsilon_decay * (episode - warmup_episodes)))
+        else: epsilon = epsilon_end
 
     logger.save_model(model, 'last')
     logger.plot_results()
