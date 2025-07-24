@@ -4,26 +4,39 @@ import torch.nn as nn
 import math
 
 from .utils import Logger, ReplayBuffer
-from .models import NeuralNetwork
+from .models import NeuralNetwork, ConvNeuralNetwork
+from gymnasium.spaces import Tuple as SpaceTuple
 
 def update(model: nn.Module, batch: tuple, optimizer: torch.optim.Optimizer, 
                 criterion: nn.Module, gamma: float, device: torch.device):
     
-    # Transpose the batch (convert batch of Transitions to Transition of batches)
-    batch = list(zip(*batch))  # Convert list of tuples to tuple of lists
-    states = batch[0]
-    actions = batch[1]
-    rewards = batch[2]
-    next_states = batch[3]
-    dones = batch[4]    
+    batch = list(zip(*batch))
+    states, actions, rewards, next_states, dones = batch
 
-    # Convert to tensors
-    states = torch.FloatTensor(states).to(device)
+    if isinstance(model, ConvNeuralNetwork):
+        num_branches = len(states[0])  
+        states = [
+            torch.stack([
+                torch.tensor(state[i]).permute(2, 0, 1) for state in states
+            ]) for i in range(num_branches)
+        ]
+        next_states = [
+            torch.stack([
+                torch.tensor(next_state[i]).permute(2, 0, 1) for next_state in next_states
+            ]) for i in range(num_branches)
+        ]
+        
+        states = [s.to(device).float() for s in states]
+        next_states = [s.to(device).float() for s in next_states]
+
+    else:
+        states = torch.FloatTensor(states).to(device)
+        next_states = torch.FloatTensor(next_states).to(device)
+
     actions = torch.LongTensor(actions).to(device)
     rewards = torch.FloatTensor(rewards).to(device)
-    next_states = torch.FloatTensor(next_states).to(device)
     dones = torch.FloatTensor(dones).to(device)
-    
+
     # Compute Q values
     current_q_values = model(states).gather(dim=1, index=actions.unsqueeze(1))
     next_q_values = model(next_states).max(dim=1)[0].detach()
@@ -47,8 +60,19 @@ def select_action(state: torch.Tensor, model: nn.Module, env, epsilon: float, de
         return q_values.argmax().item()
 
 def train(env, config: str):
+
+    if config["model"]["type"] == "mlp":
+        model = NeuralNetwork.from_config(config, env.observation_space.shape[0], env.action_space.n)
+    else: 
     
-    model = NeuralNetwork.from_config(config, env)
+        obs_space = env.observation_space
+        if isinstance(obs_space, SpaceTuple):
+            input_sizes = [obs.shape for obs in obs_space]
+        else: input_sizes = [obs_space.shape]
+
+        output_size = env.action_space.n
+        model = ConvNeuralNetwork.from_config(config, input_sizes, output_size)
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
@@ -74,19 +98,19 @@ def train(env, config: str):
     best_score = float('-inf')
 
     for episode in range(num_episodes):
-        state, _ = env.reset()
+        state = env.reset()
         total_reward = 0
         done = False
         loss = None
-        
+
         while not done:
 
             action = select_action(state, model, env, epsilon, device)
-            next_state, reward, done, _, info = env.step(action)
+            next_state, reward, done, info = env.step(action)
             replay_buffer.push(state, action, reward, next_state, done)
             total_reward += reward
             state = next_state
-            
+
             # Train model if enough samples
             if len(replay_buffer) >= batch_size:
                 batch = replay_buffer.sample(batch_size)

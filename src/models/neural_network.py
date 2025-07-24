@@ -48,12 +48,8 @@ class NeuralNetwork(nn.Module):
         return self.network(x)
     
     @classmethod
-    def from_config(cls, config: dict, env: gymnasium.Env):
+    def from_config(cls, config: dict, input_size : int, output_size : 12):
         model_config = config['model']
-        
-        # Get sizes from environment
-        input_size = env.observation_space.shape[0]  
-        output_size = env.action_space.n 
         
         hidden_activations = [ACTIVATION_MAP[act] for act in model_config['hidden_activations']]
         output_activation = ACTIVATION_MAP[model_config['output_activation']] 

@@ -5,7 +5,8 @@ env:
     use_lidar : False
 
 model:
-  hidden_sizes: [64, 64, 32]
+  type : "mlp"
+  hidden_sizes: [128, 64, 32]
   hidden_activations: [ReLU, ReLU, ReLU]
   output_activation: null
 

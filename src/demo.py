@@ -11,7 +11,7 @@ def demo(env, config: dict, model_path: str, save=False):
     logger = Logger(config, mode="demo")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = NeuralNetwork.from_config(config, env)
+    model = NeuralNetwork.from_config(config, env.observation_space.shape[0], env.action_space.n)
     model.load_state_dict(torch.load(model_path, map_location=device))
     model.to(device).eval()
 
@@ -21,16 +21,16 @@ def demo(env, config: dict, model_path: str, save=False):
         width, height = surface.get_size()
         writer = cv2.VideoWriter(video_path, cv2.VideoWriter_fourcc(*'mp4v'), 30, (width, height))
 
-    state, _ = env.reset()
-    terminated = truncated = False
+    state = env.reset()
+    done = False
 
-    while not (terminated or truncated):
+    while not done:
         with torch.no_grad():
             state_tensor = torch.tensor(state, dtype=torch.float32).unsqueeze(0).to(device)
             q_values = model(state_tensor)
             action = q_values.argmax().item()
 
-        state, reward, terminated, truncated, info = env.step(action)
+        state, reward, done, info = env.step(action)
 
         if save:
             surface = env.unwrapped._surface
