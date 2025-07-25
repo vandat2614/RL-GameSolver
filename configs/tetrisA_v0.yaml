@@ -2,6 +2,7 @@ env:
   id: "TetrisA-v0"
   params:
     render_mode: human
+    max_steps: 150
 
 model:
   type : "cnn"
@@ -21,7 +22,7 @@ train:
   batch_size: 128
   buffer_size: 2000
   gamma: 0.99
-  epsilon_start: 1.0
+  epsilon_start: 0.8
   epsilon_end: 0.01
   epsilon_decay: 0.001
   warmup_episodes : 500

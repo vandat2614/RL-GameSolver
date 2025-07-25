@@ -9,7 +9,6 @@ class BaseEnvWrapper:
 
         self.unwrapped = env.unwrapped
 
-
     def reset(self, **kwargs):
         return self.env.reset(**kwargs)
 
@@ -28,11 +27,11 @@ class FlappyBirdWrapper(BaseEnvWrapper):
         return obs
     
     def step(self, action):
-        obs, reward, done, _, info = self.env.step(action)
-        return obs, reward, done, info
+        obs, reward, done, truncated, info = self.env.step(action)
+        return obs, reward, done, truncated, info
     
 class TetrisWrapper(BaseEnvWrapper):
-    def __init__(self, env):
+    def __init__(self, env, max_steps=None):
         super().__init__(env)
         
         board_shape = (162, 81, 1)     
@@ -42,6 +41,9 @@ class TetrisWrapper(BaseEnvWrapper):
             spaces.Box(low=0, high=255, shape=board_shape, dtype=np.uint8),
             spaces.Box(low=0, high=255, shape=next_block_shape, dtype=np.uint8)
         ))
+
+        self.max_steps = max_steps
+        self.num_steps = 0
 
     def reset(self, **kwargs):
         obs = self.env.reset(**kwargs)
@@ -59,4 +61,6 @@ class TetrisWrapper(BaseEnvWrapper):
 
     def step(self, action):
         obs, reward, done, info = self.env.step(action)
-        return self._process_obs(obs), reward, done, info        
+        self.num_steps += 1
+        truncated = (self.num_steps == self.max_steps)
+        return self._process_obs(obs), reward, done, truncated, info        

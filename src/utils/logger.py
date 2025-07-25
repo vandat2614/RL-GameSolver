@@ -53,7 +53,7 @@ class Logger:
             self.losses.append(loss)
             self.epsilons.append(epsilon)
 
-            if len(self.scores) % 100 == 0:
+            if len(self.scores) % 20 == 0:
 
                 avg_reward = np.mean(self.rewards[-100:])
                 avg_score = np.mean(self.scores[-100:])

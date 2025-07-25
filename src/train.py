@@ -54,8 +54,18 @@ def select_action(state: torch.Tensor, model: nn.Module, env, epsilon: float, de
     if random.random() < epsilon:
         return env.action_space.sample()
     
+    print("CALL THIS")
+
     with torch.no_grad():
-        state_tensor = torch.tensor(state, dtype=torch.float32).unsqueeze(0).to(device)
+
+        if isinstance(state, SpaceTuple):
+            num_branches = len(state)
+            state_tensor = [torch.tensor(state[i], dtype=torch.float32).permute(2, 0, 1).unsqueeze(0).to(device)
+                            for i in range(num_branches)]
+            if num_branches == 1:
+                state_tensor = state_tensor[0]
+        else: 
+            state_tensor = torch.tensor(state, dtype=torch.float32).unsqueeze(0).to(device)
         q_values = model(state_tensor)
         return q_values.argmax().item()
 
@@ -100,13 +110,13 @@ def train(env, config: str):
     for episode in range(num_episodes):
         state = env.reset()
         total_reward = 0
-        done = False
+        done = truncated = False
         loss = None
 
-        while not done:
+        while not (done or truncated):
 
             action = select_action(state, model, env, epsilon, device)
-            next_state, reward, done, info = env.step(action)
+            next_state, reward, done, truncated, info = env.step(action)
             replay_buffer.push(state, action, reward, next_state, done)
             total_reward += reward
             state = next_state
@@ -117,6 +127,8 @@ def train(env, config: str):
                 loss = update(model, batch, optimizer, criterion, gamma, device)
         
         score =  info["score"]
+        print(f"End episode {episode}, score : {score}")
+
         if score > best_score:
             best_score = score
             logger.save_model(model, 'best')
