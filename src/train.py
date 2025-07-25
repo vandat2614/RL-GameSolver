@@ -125,16 +125,16 @@ def train(env, config: str):
 
 
             # Train model if enough samples
-            if len(replay_buffer) >= batch_size:
-                batch = replay_buffer.sample(batch_size)
-                loss = update(model, batch, optimizer, criterion, gamma, device)
+            # if len(replay_buffer) >= batch_size:
+            #     batch = replay_buffer.sample(batch_size)
+            #     loss = update(model, batch, optimizer, criterion, gamma, device)
         
             # print(f"Step: {env.num_steps}, Reward: {reward:.2f}", end="")
             # if loss is not None:
                 # print(f", Loss: {loss:.4f}")
             # print()
 
-            # env.render()
+            env.render()
             # time.sleep(1)
 
         score =  info["score"]

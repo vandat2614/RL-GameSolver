@@ -49,7 +49,7 @@ class EnvRegistry:
     
 
 SIMPLE_MOVEMENT = [
-    # ['NOOP'],
+    # ['NOOP'],d
     # ['A'],
     # ['B'],
     ['right'],
