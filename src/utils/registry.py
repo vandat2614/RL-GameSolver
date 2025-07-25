@@ -42,6 +42,6 @@ class EnvRegistry:
 
         wrapper_cls = cls._wrappers.get(env_id)
         if wrapper_cls is not None:
-            env = wrapper_cls(env, **kwargs)
+            env = wrapper_cls(env)
 
         return env

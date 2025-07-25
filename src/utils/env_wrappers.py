@@ -31,7 +31,7 @@ class FlappyBirdWrapper(BaseEnvWrapper):
         return obs, reward, done, truncated, info
     
 class TetrisWrapper(BaseEnvWrapper):
-    def __init__(self, env, max_steps=None):
+    def __init__(self, env, max_steps=100):
         super().__init__(env)
         
         board_shape = (162, 81, 1)     
