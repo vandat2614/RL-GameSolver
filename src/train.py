@@ -129,7 +129,7 @@ def train(env, config: str):
         
             print(f"Step: {env.num_steps}, Reward: {reward:.2f}", end="")
             if loss is not None:
-                print(", Loss: {loss:.4f}")
+                print(f", Loss: {loss:.4f}")
             print()
 
 

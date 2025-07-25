@@ -46,6 +46,7 @@ class TetrisWrapper(BaseEnvWrapper):
         self.num_steps = 0
 
     def reset(self, **kwargs):
+        self.num_steps = 0
         obs = self.env.reset(**kwargs)
         return self._process_obs(obs)
 
