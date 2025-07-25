@@ -121,7 +121,7 @@ def train(env, config: str):
             total_reward += reward
             state = next_state
 
-            print(f"Reward: {reward:.2f}")
+            print(f"Step: {env.num_steps}, Reward: {reward:.2f}")
 
             # Train model if enough samples
             if len(replay_buffer) >= batch_size:
