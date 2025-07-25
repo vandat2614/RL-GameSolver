@@ -121,11 +121,15 @@ def train(env, config: str):
             total_reward += reward
             state = next_state
 
+            print(f"Reward: {reward:.2f}")
+
             # Train model if enough samples
             if len(replay_buffer) >= batch_size:
                 batch = replay_buffer.sample(batch_size)
                 loss = update(model, batch, optimizer, criterion, gamma, device)
         
+                print(f"Update: {loss:.4f}")
+
         score =  info["score"]
         print(f"End episode {episode}, score : {score}")
 

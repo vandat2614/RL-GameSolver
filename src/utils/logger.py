@@ -55,8 +55,8 @@ class Logger:
 
             if len(self.scores) % 20 == 0:
 
-                avg_reward = np.mean(self.rewards[-100:])
-                avg_score = np.mean(self.scores[-100:])
+                avg_reward = np.mean(self.rewards[-20:])
+                avg_score = np.mean(self.scores[-20:])
 
                 print(f"Episode {episode}, Avg reward: {avg_reward:.2f}, Avg score: {avg_score}, Loss: {loss:.4f}, Epsilon: {epsilon:.3f}")
 
