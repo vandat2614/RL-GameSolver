@@ -134,7 +134,7 @@ def train(env, config: str):
                 # print(f", Loss: {loss:.4f}")
             # print()
 
-            env.render()
+            # env.render()
             # time.sleep(1)
 
         score =  info["score"]
