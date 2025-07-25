@@ -35,6 +35,7 @@ class EnvRegistry:
             gym_tetris = cls._imported_modules["gym_tetris"]
             nes_wrappers = cls._imported_modules["nes_py.wrappers"]
             movement = cls._imported_modules["gym_tetris.actions"].SIMPLE_MOVEMENT
+            # movement = SIMPLE_MOVEMENT
             env = gym_tetris.make(env_id)
             env = nes_wrappers.JoypadSpace(env, movement)
         else:
@@ -45,3 +46,13 @@ class EnvRegistry:
             env = wrapper_cls(env)
 
         return env
+    
+
+SIMPLE_MOVEMENT = [
+    # ['NOOP'],
+    # ['A'],
+    # ['B'],
+    ['right'],
+    ['left'],
+    ['down'],
+]
