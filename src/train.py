@@ -127,7 +127,10 @@ def train(env, config: str):
                 batch = replay_buffer.sample(batch_size)
                 loss = update(model, batch, optimizer, criterion, gamma, device)
         
-            print(f"Step: {env.num_steps}, Reward: {reward:.2f}, Loss: {loss:.4f}")
+            print(f"Step: {env.num_steps}, Reward: {reward:.2f}", end="")
+            if loss is not None:
+                print(", Loss: {loss:.4f}")
+            print()
 
 
         score =  info["score"]
