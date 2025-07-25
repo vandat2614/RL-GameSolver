@@ -1,7 +1,6 @@
 env:
   id: "TetrisA-v0"
   params:
-    # render_mode: human
     max_steps: 100
 
 model:
