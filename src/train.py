@@ -54,11 +54,11 @@ def select_action(state: torch.Tensor, model: nn.Module, env, epsilon: float, de
     if random.random() < epsilon:
         return env.action_space.sample()
     
-    print("CALL THIS")
+    # print("CALL THIS")
 
     with torch.no_grad():
 
-        if isinstance(state, SpaceTuple):
+        if isinstance(state, tuple):
             num_branches = len(state)
             state_tensor = [torch.tensor(state[i], dtype=torch.float32).permute(2, 0, 1).unsqueeze(0).to(device)
                             for i in range(num_branches)]
