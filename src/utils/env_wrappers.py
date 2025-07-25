@@ -64,3 +64,5 @@ class TetrisWrapper(BaseEnvWrapper):
         self.num_steps += 1
         truncated = (self.num_steps == self.max_steps)
         return self._process_obs(obs), reward, done, truncated, info        
+
+

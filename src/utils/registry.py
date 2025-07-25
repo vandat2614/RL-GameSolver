@@ -34,7 +34,7 @@ class EnvRegistry:
         if env_id == "TetrisA-v0":
             gym_tetris = cls._imported_modules["gym_tetris"]
             nes_wrappers = cls._imported_modules["nes_py.wrappers"]
-            movement = cls._imported_modules["gym_tetris.actions"].MOVEMENT
+            movement = cls._imported_modules["gym_tetris.actions"].SIMPLE_MOVEMENT
             env = gym_tetris.make(env_id)
             env = nes_wrappers.JoypadSpace(env, movement)
         else:
@@ -42,6 +42,6 @@ class EnvRegistry:
 
         wrapper_cls = cls._wrappers.get(env_id)
         if wrapper_cls is not None:
-            env = wrapper_cls(env)
+            env = wrapper_cls(env, **kwargs)
 
         return env
