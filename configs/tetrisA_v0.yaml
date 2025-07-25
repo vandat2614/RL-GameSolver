@@ -2,28 +2,28 @@ env:
   id: "TetrisA-v0"
   params:
     render_mode: human
-    max_steps: 150
+    max_steps: 100
 
 model:
   type : "cnn"
-  kernel_sizes: [[5, 3], [3, 3]]
+  kernel_sizes: [[5, 3], [5, 3]]
   strides: [[1, 1], [1, 1]]
-  paddings: [[2, 1], [1, 1]]
-  embed_dims: [[16, 32], [8, 16]]
+  paddings: [[2, 1], [2, 1]]
+  embed_dims: [[32, 64], [32, 48]]
   conv_activations: [[ReLU, ReLU], [ReLU, ReLU]]
   poolings: [[null, AdaptiveAvgPool2d], [null, AdaptiveAvgPool2d]]
 
-  hidden_sizes: [128, 64]
+  hidden_sizes: [128, 128]
   hidden_activations: [ReLU, ReLU]
   output_activation: null
 
 train:
-  num_episodes: 10000
+  num_episodes: 1000
   batch_size: 128
   buffer_size: 2000
   gamma: 0.99
   epsilon_start: 0.8
   epsilon_end: 0.01
   epsilon_decay: 0.001
-  warmup_episodes : 500
+  warmup_episodes : 100
   learning_rate: 0.0001

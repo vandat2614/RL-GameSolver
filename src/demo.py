@@ -33,9 +33,9 @@ def demo(env, config: dict, model_path: str, save=False):
         writer = cv2.VideoWriter(video_path, cv2.VideoWriter_fourcc(*'mp4v'), 30, (width, height))
 
     state = env.reset()
-    done = False
+    done = truncated = False
 
-    while not done:
+    while not (done or truncated):
         with torch.no_grad():
 
 
@@ -52,7 +52,7 @@ def demo(env, config: dict, model_path: str, save=False):
             q_values = model(state_tensor)
             action = q_values.argmax().item()
 
-        state, reward, done, info = env.step(action)
+        state, reward, done, truncated, info = env.step(action)
 
         env.render()
 
